@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="BoardDAOImpl">
+	<insert id="insertBoard">
+		insert into board values(board_seq.nextval,#{title},#{contents},#{writer},default,default,#{ipaddr})
+	</insert>
+	<select id="selectBoardListByCurrnetPage" resultType="kh.spring.dto.BoardDTO">
+		select rownum, board.* from board where rownum between #{start} and #{end} 
+	</select>
+</mapper>

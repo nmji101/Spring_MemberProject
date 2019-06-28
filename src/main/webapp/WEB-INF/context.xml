@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
+
+	<mvc:annotation-driven></mvc:annotation-driven>
+	<context:component-scan base-package="kh.spring"></context:component-scan>
+	<aop:aspectj-autoproxy proxy-target-class="true"></aop:aspectj-autoproxy>
+<!-- 	//proxy-target-class="true" -> cg라이브러리 프록시로 작동하게하겠다.  -->
+<!-- 	//jdk 동적 프록시는 interface를 가려서 사용...  -->
+<!-- cg라이브러리는 jdk 동적 프록시보다 aop사용시 성능도 더 좋지만, aop클래스내에 final을 처리하지 못한다. 하지만 이런경우는 final을 붙여 쓰는경우가 거~의없기때문에 -->
+<!-- proxy-target-class="true" 로 놓고 사용하는것이 좋다. -->
+	<bean
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/WEB-INF/views/"></property> <!-- 접두사 -->
+		<property name="suffix" value=".jsp"></property>			<!-- 접미사 -->
+	</bean>
+
+	<bean id="dataSource"
+		class="org.apache.commons.dbcp.BasicDataSource">
+		<property name="driverClassName"
+			value="oracle.jdbc.driver.OracleDriver"></property>
+		<property name="url"
+			value="jdbc:oracle:thin:@localhost:1521:xe"></property>
+		<property name="username" value="kh"></property>
+		<property name="password" value="kh"></property>
+		<!-- <property name="defaultAutoCommit" value="false"></property> : spring-jdbc할때는 
+			autocommit true로 놓고 쓰기!안그러면 commit안됨 -->
+		<!-- defalut오토커밋이 default로 true로 되어있어서 con.commit을 하면 오류가 나버린다. 그래서 false설정 
+			추가해주기! -->
+		<!-- autowire="byType" -->
+	</bean>
+
+	<!-- jdbc template 클래스 내부의 setter로 dataSource를 넣어두면 -->
+	<bean id="jdbcTemplate"
+		class="org.springframework.jdbc.core.JdbcTemplate">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	<bean id="mav"
+		class="org.springframework.web.servlet.ModelAndView" scope="prototype" />
+
+
+	<bean
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver"
+		id="multipartResolver">
+		<property value="10000000" name="maxUploadSize" />
+	</bean>
+	
+	<bean id="sqlSessionFactory"
+		class="org.mybatis.spring.SqlSessionFactoryBean">
+		<!-- 연결정보를 바탕으로 connection을 연결해주는것 -->
+
+		<property name="dataSource" ref="dataSource" />
+		<!-- dbcp를 setter로 받아서 -->
+		<property name="mapperLocations"
+			value="classpath:/mybatis/*-mapper.xml"></property>
+		<!-- 사용할 쿼리문을 가지고있는 xml의 위치를넣어줘야한다. xml문서 내의 쿼리를 참조해서 자바가 해당 쿼리를실행하게 된다. -->
+		<!-- 어떤 맵핑정보를 바탕으로 동작하게할건지 set해줘야한다. -->
+		<!-- classpath : src/main/resources -->
+	</bean>
+
+	<bean id="sqlSession"
+		class="org.mybatis.spring.SqlSessionTemplate">
+		<!-- 어떤 팩토리에서 만들건지 생성자에 넣어줘야한다. -->
+		<constructor-arg name="sqlSessionFactory"
+			ref="sqlSessionFactory" />
+	</bean>
+	
+	<mvc:resources location="/resources/" mapping="/image/**"></mvc:resources>
+	<tx:annotation-driven
+		transaction-manager="txManager" />
+	<!-- 해당 커넥션에대한 트랜잭션 이슈를 해결해줌 -->
+	<bean id="txManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
+	
+</beans>

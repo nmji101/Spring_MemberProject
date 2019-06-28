@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="MemberDAO">
+	<insert id="insertNewMember">
+		insert into member values(#{id},#{pw},#{name},#{phone},#{email},#{zipcode},#{addr1},#{addr2},sysdate,#{profile})
+	</insert>
+	<select id="selectCount" resultType="int">
+		select count(*) as cnt from member
+	</select>
+	<select id="idDuplCheck" resultType="int">
+		select count(*) from member where id = #{id}
+	</select>
+	<select id="isLoginOk" resultType="String">
+		select id from member where id = #{id} and pw = #{pw} 
+	</select>
+	<select id="selectProfile" resultType="String">
+		select profile from member where id = #{id}
+	</select>
+	<select id="selectUserInfo" resultType="kh.spring.dto.MemberDTO">
+		select id,pw,name,nvl(phone,'-') as phone ,nvl(email,'-') as email, nvl(zipcode,'-') as zipcode ,
+		nvl(addr1,'-') as addr1 ,nvl(addr2,'-') as addr2 ,joindate, profile from member where id = #{id}
+	</select>
+	<update id="modifyProfileImg">
+		update member set profile=#{modifyImg} where id=#{id}
+	</update>
+</mapper>
