@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Created by https://www.gitignore.io/api/java,eclipse,gradle
 
 ### Eclipse ###
@@ -89,6 +90,9 @@ gradle-app.setting
 /build/
 # Compiled class file
 
+=======
+# Compiled class file
+>>>>>>> 691fe293812b79877837131a05b01e0908b7ad76
 *.class
 
 # Log file
@@ -101,6 +105,10 @@ gradle-app.setting
 .mtj.tmp/
 
 # Package Files #
+<<<<<<< HEAD
+=======
+*.jar
+>>>>>>> 691fe293812b79877837131a05b01e0908b7ad76
 *.war
 *.nar
 *.ear
@@ -110,6 +118,7 @@ gradle-app.setting
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
+<<<<<<< HEAD
 
 /.metadata/
 
@@ -121,3 +130,5 @@ Servers/
 MANIFEST.MF
 /bin/
 
+=======
+>>>>>>> 691fe293812b79877837131a05b01e0908b7ad76
