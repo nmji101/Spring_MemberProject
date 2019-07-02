@@ -4,7 +4,17 @@
 	<insert id="insertBoard">
 		insert into board values(board_seq.nextval,#{title},#{contents},#{writer},default,default,#{ipaddr})
 	</insert>
+	<!-- 		select rownum, board.* from board where rownum between #{start} and #{end} order by 1 desc -->
 	<select id="selectBoardListByCurrnetPage" resultType="kh.spring.dto.BoardDTO">
-		select rownum, board.* from board where rownum between #{start} and #{end} 
+		select * from (select ROW_NUMBER() OVER(order by seq desc) as rnum, board.* from board) where rnum between #{start} and #{end}
+	</select>
+	<update id="updateViewCount">
+		update board set viewcount=viewcount+1 where seq=#{seq}
+	</update>
+	<select id="selectAllBoardCount" resultType="int">
+		select count(*) from board
+	</select>
+	<select id="selectBoardDTOBySeq" resultType="kh.spring.dto.BoardDTO">
+		select * from board where seq=#{seq}
 	</select>
 </mapper>

@@ -1,5 +1,6 @@
 package kh.spring.aspect;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -20,11 +21,12 @@ public class PerfCheckAdvice {
 	 */
 	
 	@Around("(execution(* kh.spring.practice.MemberController.*(..)) && !execution(* kh.spring.practice.MemberController.lic*(..)))||"
-			+ "execution(* kh.spring.practice.BoardController.*(..)) ")
+			+ "execution(* kh.spring.practice.BoardController.*(..))")
 	public Object perfCheck(ProceedingJoinPoint pjp) {
 		long startTime = System.currentTimeMillis();
 		Object retVal = null;
 		try {
+//			System.out.println("메소드이름->"+pjp.getSignature().getName());
 			retVal = pjp.proceed();
 		} catch (Throwable e) {
 			// TODO Auto-generated catch block

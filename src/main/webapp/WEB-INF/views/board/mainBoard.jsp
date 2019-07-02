@@ -8,6 +8,9 @@
                 <title>자유게시판</title>
                 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
                 <style>
+                	*{
+                		font-family: sans-serif;
+                	}
                     .container{
                         margin: 50px auto;
                         font-size: 20px;
@@ -27,9 +30,9 @@
                         padding: 0px;
                     }
                     .content{
-                        height: 320px;
+                        height: 450px;
                     }
-                    .btn{
+                    .navi_btn{
                         color: #910c0c;
                         border: 1px solid #910c0c;
                         background-color: rgba(178, 255, 89, 0.27);
@@ -38,7 +41,7 @@
                         font-size : 14px;
                         padding : 5px;
                     }
-                    .btn:hover{
+                    .navi_btn:hover{
                         background-color: rgba(89, 191, 255, 0.21);
                     }
                     .footBtn{
@@ -59,6 +62,11 @@
                     .lineContent{
                         cursor:pointer;
                         border-bottom: 1px solid #910c0c;
+                        height: 50px;
+                        line-height: 50px;
+                    }
+                    .lineContent>div{
+						height: inherit;
                     }
                     .lineContent:hover{
                         background-color: rgba(255, 201, 128, 0.24);
@@ -72,6 +80,19 @@
            			 	width : 200px;
            			 	margin : 0px;
            			 }
+           			 .thumbnail{
+           			 	width : 50px;
+           			 	height: 50px;
+           			 }
+           			 .thumbnail>img{
+           			 	height: inherit;
+           			 	vertical-align: inherit;
+           			 }
+           			 .titleText{
+           			 	height : 50px;
+           			 	line-height: 50px;
+           			 	text-align: center;
+           			 }
            		</style>
                 <script src="https://code.jquery.com/jquery-3.4.0.min.js"></script>
                 <script>
@@ -79,23 +100,44 @@
                     	if(${boardList==null}){
                             $(".content").css("line-height","320px");
                         };
+                        $(".contents").each(function(i,item){
+                        	var content = $(item).val();
+                        	var contentRegex = /(<img.+?>)/;
+                        	var contentResult = contentRegex.exec(content);
+                        	if(contentResult!=null){
+                        		var img = $(contentResult[1]);
+//                         		console.log(img);
+                        		$(img).removeAttr('style');
+                        		$(item).next().prepend(img);
+                        	}
+                        	
+                        });
                         document.getElementById("toWriteBoard").onclick = function(){
                             location.href = "newWrite";
                         }
                         document.getElementById("toIndex").onclick = function(){
                             location.href = "/";
                         }
-                        $(".lineContent").on("click",function(){
-                            var seq = this.firstElementChild.innerHTML;
-                            location.href = "clickPost.board?seq="+seq+"&currentPage="+${currentPage};
+                        $(".lineContent").on("click",function(){//글 클릭했을때,
+//                             var seq = this.firstElementChild.innerHTML;
+//                             location.href = "clickPost.board?seq="+seq+"&currentPage="+${currentPage};
+							var seq = this.firstElementChild.innerHTML;
+                        	var clickPostForm = $("<form></form>");
+                        	$(clickPostForm).prop("action","clickPost");
+                        	$(clickPostForm).prop("method","post");
+                        	
+                        	$(clickPostForm).append($('<input type="hidden" value="'+seq+'" name="seq">'));
+                        	$(clickPostForm).append($('<input type="hidden" value="${currentPage}" name="currentPage">'));
+                        	
+                        	$(clickPostForm).appendTo("body");
+                        	//alert(classId + " : " + userId + " : " + selectedDate);
+                        	
+                        	$(clickPostForm).submit();
                         });
-                        $(".btn").on("click",function(){
-                        	var page = $(this).text();
-                        	//alert(page); //확인용
-                        		location.href = "clickPage.board?currentPage="+page;
-                        	}
-                        );
-                        $(".btn").each(function(i,item){
+                        $(".navi_btn").on("click",function(){
+                        	$(this).parent().submit();
+                        });
+                        $(".navi_btn").each(function(i,item){
                             if($(item).text()==${currentPage}){
                             	$(item).css("background-color","rgba(33, 105, 105, 0.38)");
                             }
@@ -132,7 +174,12 @@
                     <div class="row topNavi">
                         <!--			d-xs-none -> d-none -->
                         <div class="col-lg-1 col-md-1 col-sm-1 d-none d-sm-block">No</div>
-                        <div class="col-lg-6 col-md-6 col-sm-6 col-12">Title</div>
+                        <div class="col-lg-6 col-md-6 col-sm-6 col-12">
+                       		<div class="row">
+                       			<div class="col-lg-2 col-md-2 col-sm-2 col-2"></div>
+                       			<div class="col-lg-10 col-md-10 col-sm-10 col-10">Title</div>
+                       		</div>
+                        </div>
                         <div class="col-lg-2 col-md-2 col-sm-2 d-none d-sm-block">Writer</div>
                         <div class="col-lg-2 col-md-2 col-sm-2 d-none d-sm-block">Date</div>
                         <div class="col-lg-1 col-md-1 col-sm-1 d-none d-sm-block">조회수</div>
@@ -148,8 +195,21 @@
                                 <div class="col-lg-12 col-md-12 col-sm-12">
                                     <c:forEach var="dto" items="${boardList}">
                                            	<div class="m-0 p-0 row lineContent">
-                                                <div class="col-lg-1 col-md-1 col-sm-1 d-none d-sm-block">${dto.seq }</div>                                        
-                                                <div class="col-lg-6 col-md-6 col-sm-6 col-12 title">${dto.title }</div>
+                                                <div class="col-lg-1 col-md-1 col-sm-1 d-none d-sm-block">${dto.seq }</div>                                      
+                                                <div class="col-lg-6 col-md-6 col-sm-6 col-12 title">
+                                                	<div class="row">
+                                                		<div class="col-lg-2 col-md-2 col-sm-2 col-2">
+                                                			<input class="contents" type="hidden" value='${dto.contents }'>
+                                                			<span class="thumbnail"></span>
+                                                		</div>
+                                                		<div class="col-lg-10 col-md-10 col-sm-10 col-10">
+                                                			${dto.title }
+                                                		</div>
+                                                	</div>
+<%--                                                 	<input class="contents" type="hidden" value='${dto.contents }'>  --%>
+<!--                                                		<span class="thumbnail"></span> -->
+<%--                                                		<span class="titleText">${dto.title }</span> --%>
+                                                </div>
                                                 <div class="col-lg-2 col-md-2 col-sm-2 d-none d-sm-block">${dto.writer }</div>
                                                 <div class="col-lg-2 col-md-2 col-sm-2 d-none d-sm-block">${dto.formTime }</div>
                                                 <div class="col-lg-1 col-md-1 col-sm-1 d-none d-sm-block">${dto.viewcount}</div>
@@ -163,7 +223,10 @@
                     	<div class="col-lg-3 col-md-3 col-sm-3"></div>
                         <div class="col-lg-6 col-md-6 col-sm-6">
                             <c:forEach var="n" items="${navi }">
-                            	<button type="button" class="btn">${n}</button>
+                            	<form action="toBoardList" method="post" style='display:inline-block'>
+                            		<button type="button" class="navi_btn">${n}</button>
+                            		<input type="hidden" value="${n}" name="currentPage">
+                            	</form>
                             </c:forEach>
                         </div>
                         <div class="col-lg-3 col-md-3 col-sm-3"></div>

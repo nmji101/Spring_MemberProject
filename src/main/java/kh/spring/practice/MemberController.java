@@ -27,6 +27,11 @@ public class MemberController {
 
 	@RequestMapping("/")
 	public String main() {
+		if(session.getAttribute("loginId")!=null) {
+			String loginId = (String)session.getAttribute("loginId");
+			String profile = dao.selectProfile(loginId);
+			session.setAttribute("profile", profile);
+		}
 		return "member/main";
 	}
 	@RequestMapping("/joinForm")

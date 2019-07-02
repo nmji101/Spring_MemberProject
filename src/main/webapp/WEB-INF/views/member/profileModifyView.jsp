@@ -115,7 +115,7 @@
 		$("#modify_OK_Btn").on("click", function() {
 			var modi_form = $("#profile_modi_form")[0];
 			var form = new FormData(modi_form);
-			alert(form);
+// 			alert(form);
 			$.ajax({
 				url: "modifyProfile",
 				data: form, 
@@ -125,7 +125,7 @@
 				async : false,
 				type: 'POST',
 				success: function (response) {
-					alert(response);
+// 					alert(response);
 					var time = new Date().getTime();
 					opener.document.getElementById("profile").setAttribute("src","/image"+response+"?time="+time);
 // 					$(opener.document).find("#profile").after("<img src='/image"+response+"'>");

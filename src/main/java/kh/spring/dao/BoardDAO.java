@@ -9,5 +9,11 @@ public interface BoardDAO {
 	
 	public int[] getRecordPerPageBeginEnd(int currentPage);
 	
-	public List<BoardDTO> selectPageBoard(int start, int end);
+	public List<BoardDTO> selectPageBoard(int start , int end);
+	
+	public List<String> getNavi(int currentPage , int listSize)throws Exception;
+	
+	public BoardDTO selectPost(int seq);
+	
+	public int updateViewCount(int seq);
 }

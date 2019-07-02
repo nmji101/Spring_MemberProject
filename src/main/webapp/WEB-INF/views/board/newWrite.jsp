@@ -66,26 +66,28 @@
             }
         </style>
         <script>
+        function sendFile(file,el){
+            data = new FormData();
+            data.append("file", file);
+//             alert(file);
+            $.ajax({
+                data: data,
+                type: "POST",
+                url: "saveImageAjax.board",
+                cache: false,
+                contentType: false,
+                processData: false,
+                enctype:"multipart/form-data",
+            	success: function (data) {
+// 					alert(data);
+					$(el).summernote('editor.insertImage', 'image'+data);
+// 					$(".note-editable").append("<img src='image/"+data+"'>");
+           		}
+            });
+       	 };
             window.onload = function(){
-                function sendFile(file,editor,welEditable){
-                    data = new FormData();
-                    data.append("file", file);
-                    $.ajax({
-                        data: data,
-                        type: "POST",
-                        url: "saveImageAjax.board",
-                        cache: false,
-                        contentType: false,
-                        processData: false,
-                        encType:"multipart/form-data",
-                    	success: function (data) {
-							alert(data);
-							$(".note-editable").append("<img src='"+data+"'>");
-                   		}
-                    });
-                };
                 document.getElementById("toMainBoard").onclick = function(){
-                    location.href = "Toboard.board";
+                    location.href = "toBoard";
                 }
                 document.getElementById("writeComplete").onclick = function(){
                     var title= $("#title");
@@ -105,7 +107,7 @@
 //                         return;
 //                     }
 					$('textarea[name="contents"]').val($('#summernote').summernote('code'));
-					alert("val : "+$('textarea[name="contents"]').val());
+// 					alert("val : "+$('textarea[name="contents"]').val());
                     document.getElementById("writeForm").submit();
                 }
                 $('#summernote').summernote({
@@ -114,8 +116,7 @@
                     height: 500,
                     callbacks : {
                         onImageUpload: function(files, editor, welEditable) {
-                        	//alert("이미지");
-                            sendFile(files[0],editor,welEditable);
+                            sendFile(files[0],this);
                         }
                     }
                 });

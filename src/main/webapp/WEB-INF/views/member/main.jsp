@@ -56,7 +56,7 @@
             			cursor : pointer;
             		}
             		#profile{
-						width:50px;
+						width:60px;
 						border-radius: 10px;
 						position: relative;
 						top:20px;

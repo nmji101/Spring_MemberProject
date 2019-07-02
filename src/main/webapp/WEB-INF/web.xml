@@ -31,9 +31,9 @@
 		</filter-class>
 	</filter>
 	<filter-mapping>
-		<filter-name>multipart</filter-name>
-		<url-pattern>/*</url-pattern>
-	</filter-mapping>
+        <filter-name>multipart</filter-name>
+        <url-pattern>/saveImageAjax.board</url-pattern>
+    </filter-mapping>
 	<!-- The definition of the Root Spring Container shared by all Servlets 
 		and Filters -->
 	<context-param>
